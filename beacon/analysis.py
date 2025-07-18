@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from .api import EMERGENCY_WA_ENDPOINTS
 
 
 @dataclass
@@ -19,19 +20,20 @@ def diff_endpoint(before, after):
     return EndpointDelta(minus, changed, plus)
 
 
-def incident_processor(before, after, delta):
-    print(delta)
+def process(endpoint, before, after, delta):
+    print(endpoint, delta)
 
 
 def determine_events(before, after):
     endpoint_to_key = {"total-fire-bans": "totalFireBans"}
-    endpoint_processors = {"incidents": incident_processor}
 
     def dictify(endpoint_data):
         return {t["id"]: t for t in endpoint_data}
 
-    for endpoint, processor in endpoint_processors.items():
+    for endpoint in EMERGENCY_WA_ENDPOINTS:
         before_data = dictify(before[endpoint][endpoint_to_key.get(endpoint, endpoint)])
         after_data = dictify(after[endpoint][endpoint_to_key.get(endpoint, endpoint)])
         delta = diff_endpoint(before_data, after_data)
-        processor(before, after, delta)
+        if not delta.minus and not delta.changed and not delta.plus:
+            continue
+        process(endpoint, before, after, delta)
