@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "beacon"
+version = "0.1.0"
+description = ""
+authors = ["Grahame Bowland <grahame@bowland.au>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.4"
+
+[tool.poetry.scripts]
+beacon = "beacon.cli:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
