@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 from .settings import settings
 
-DATABASE_URL = settings.pg_async_dsn
+DATABASE_URL = str(settings.pg_async_dsn)
 
 
 class Base(DeclarativeBase):

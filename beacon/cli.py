@@ -34,7 +34,7 @@ def events():
 
 
 def serve():
-    uvicorn.run("beacon.server:app", host="0.0.0.0", log_level="info")
+    uvicorn.run("beacon.server:app", port=5961, log_level="info")
 
 
 def main():

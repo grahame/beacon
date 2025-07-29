@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from settings import settings
+from .settings import settings
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin, models
 from fastapi_users.authentication import (
@@ -19,7 +19,6 @@ theolau_oauth_client = OAuth2(
     settings.theolau_oauth_client_secret,
     "https://auth.theol.au/application/o/authorize/",
     "https://auth.theol.au/application/o/token/",
-    revoke_token_endpoint="https://auth.theol.au/application/o/beacon/end-session/",
 )
 
 

@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     pg_async_dsn: PostgresDsn = "postgres+asyncpg://user:pass@localhost:5432/beacon"
     token_secret: str
     redis_location: str = "redis://localhost:6379/2"
-    base_url: str
     theolau_oauth_client_id: str
     theolau_oauth_client_secret: str
 
