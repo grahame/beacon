@@ -1,4 +1,3 @@
-import os
 import uuid
 from typing import Optional
 
@@ -17,10 +16,10 @@ from beacon.db import User, get_user_db
 
 theolau_oauth_client = OAuth2(
     settings.theolau_oauth_client_id,
-    settings.theolau_oauth_client_secret
-    'https://auth.theol.au/application/o/authorize/',
-    'https://auth.theol.au/application/o/token/',
-    revoke_token_endpoint='https://auth.theol.au/application/o/beacon/end-session/'
+    settings.theolau_oauth_client_secret,
+    "https://auth.theol.au/application/o/authorize/",
+    "https://auth.theol.au/application/o/token/",
+    revoke_token_endpoint="https://auth.theol.au/application/o/beacon/end-session/",
 )
 
 
@@ -40,7 +39,7 @@ bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy[models.UP, models.ID]:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+    return JWTStrategy(secret=settings.token_secret, lifetime_seconds=3600)
 
 
 auth_backend = AuthenticationBackend(

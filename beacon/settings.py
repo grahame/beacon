@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     token_secret: str
     redis_location: str = "redis://localhost:6379/2"
     base_url: str
+    theolau_oauth_client_id: str
+    theolau_oauth_client_secret: str
 
     def create_sync_engine(self, **kwargs):
         return sqlalchemy.create_engine(

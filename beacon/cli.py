@@ -42,9 +42,8 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("update", help="Get latest data from Emergency WA")
     subparsers.add_parser("events", help="List all events")
+    subparsers.add_parser("serve", help="Serve HTTP requests")
 
     args = parser.parse_args()
-    if args.command == "update":
-        update()
-    elif args.command == "events":
-        events()
+    command_funcs = {"update": update, "events": events, "serve": serve}
+    command_funcs[args.command]()
