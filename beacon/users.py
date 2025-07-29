@@ -10,15 +10,15 @@ from fastapi_users.authentication import (
     JWTStrategy,
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
-from httpx_oauth.oauth2 import OAuth2
+from httpx_oauth.clients.openid import OpenID
 
 from beacon.db import User, get_user_db
 
-theolau_oauth_client = OAuth2(
+theolau_oauth_client = OpenID(
     settings.theolau_oauth_client_id,
     settings.theolau_oauth_client_secret,
-    "https://auth.theol.au/application/o/authorize/",
-    "https://auth.theol.au/application/o/token/",
+    "https://auth.theol.au/application/o/beacon/.well-known/openid-configuration",
+    "theolau",
 )
 
 
