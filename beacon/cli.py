@@ -5,6 +5,8 @@ import os
 from glob import glob
 from itertools import pairwise
 
+import uvicorn
+
 DATA_DIR = "data/emergencywa"
 
 
@@ -29,6 +31,10 @@ def events():
         with open(to_file, "r") as fd:
             to_data = json.load(fd)
         determine_events(from_data, to_data)
+
+
+def serve():
+    uvicorn.run("beacon.server:app", host="0.0.0.0", log_level="info")
 
 
 def main():

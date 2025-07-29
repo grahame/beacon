@@ -20,7 +20,7 @@ def diff_endpoint(before, after):
     return EndpointDelta(minus, changed, plus)
 
 
-def process(endpoint, before, after, delta):
+def process(endpoint, before, after, delta: EndpointDelta):
     print(endpoint, delta)
 
 
