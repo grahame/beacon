@@ -2,10 +2,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI
 
-from beacon.db import User, create_db_and_tables
-from beacon.schemas import UserCreate, UserRead, UserUpdate
-from beacon.settings import settings
-from beacon.users import (
+from .db import User, create_db_and_tables
+from .schemas import UserCreate, UserRead, UserUpdate
+from .settings import settings
+from .users import (
     auth_backend,
     current_active_user,
     fastapi_users,

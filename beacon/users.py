@@ -12,7 +12,7 @@ from fastapi_users.authentication import (
 from fastapi_users.db import SQLAlchemyUserDatabase
 from httpx_oauth.clients.openid import OpenID
 
-from beacon.db import User, get_user_db
+from .db import User, get_user_db
 
 theolau_oauth_client = OpenID(
     settings.theolau_oauth_client_id,
