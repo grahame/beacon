@@ -1,7 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
 import json
-import sys
 import shapely
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry

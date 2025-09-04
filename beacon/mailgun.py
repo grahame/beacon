@@ -1,7 +1,7 @@
 from mailgun.client import Client
-from .settings import settings
-import sys
+
 from .log import make_logger
+from .settings import settings
 
 logger = make_logger(__name__)
 

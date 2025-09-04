@@ -1,19 +1,29 @@
 import argparse
+import traceback
 import uvicorn
 
-from beacon.db import create_db_and_tables, get_parish_subscriptions
+from beacon.db import get_parish_subscriptions
 
 DATA_DIR = "data/emergencywa"
 
 
 def process():
-    from .analysis import determine_events
-    from .api import get_latest_data
+    try:
+        from .analysis import determine_events
+        from .api import get_latest_data
 
-    state = get_latest_data()
-    subscriptions = get_parish_subscriptions()
-    messages = determine_events(state)
-    messages.dispatch(subscriptions)
+        state = get_latest_data()
+        subscriptions = get_parish_subscriptions()
+        messages = determine_events(state)
+        messages.dispatch(subscriptions)
+    except Exception:
+        from .mailgun import send_message
+
+        traceback_string = traceback.format_exc()
+        send_message(
+            "frgrahame@bowland.au",
+            "Processing failed with exception:\n\n{}".format(traceback_string),
+        )
 
 
 def serve():
