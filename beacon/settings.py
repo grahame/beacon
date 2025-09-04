@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     redis_location: str = "redis://localhost:6379/2"
     theolau_oauth_client_id: str
     theolau_oauth_client_secret: str
+    mailgun_api_key: str
 
     def create_sync_engine(self, **kwargs):
         return sqlalchemy.create_engine(

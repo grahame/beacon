@@ -5,6 +5,10 @@ import sys
 import shapely
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
+from hashlib import sha256
+
+from .mailgun import send_message
+from .redis import get_redis
 
 
 @dataclass
@@ -106,11 +110,46 @@ class ParishMessages:
     def add_message(self, parish, text):
         self._messages[parish].append(text)
 
-    def dispatch(self):
+    def dispatch(self, subscriptions):
+        redis_client = get_redis()
+
+        # exclude messages we've already sent, then assign messages
+        # to users, then turn those into emails that we send
+        user_parish_messages = defaultdict(lambda: defaultdict(list))
+
+        def get_message_key(*args):
+            return sha256(":".join(args).encode("utf8")).hexdigest()
+
         for parish, messages in sorted(self._messages.items()):
-            print("-- {} --".format(parish))
+            if parish not in subscriptions:
+                continue
+            subs = subscriptions[parish]
             for message in messages:
-                print(message)
+                for user in subs:
+                    user_parish_messages[user][parish].append(message)
+
+        # send the emails
+        for user, parish_messages in user_parish_messages.items():
+            keys = []
+            lines = []
+            for parish, messages in parish_messages.items():
+                parish_lines = []
+                for message in messages:
+                    message_key = get_message_key(user, parish, message)
+                    keys.append(message_key)
+                    if message_key in redis_client:
+                        continue
+                    parish_lines.append(message)
+                    parish_lines.append("")
+                if parish_lines:
+                    lines.append("{}:".format(parish))
+                    lines += parish_lines
+
+            if lines:
+                send_message(user, "\n".join(lines))
+
+            for key in keys:
+                redis_client.set(key, 1)
 
 
 handlers = {"warnings": EndpointHandler(map_warnings, handle_warnings)}
@@ -134,4 +173,4 @@ def determine_events(state):
         endpoint_state = dictify(state[endpoint][key])
         handler.handler(messages, endpoint_state)
 
-    messages.dispatch()
+    return messages

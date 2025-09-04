@@ -1,8 +1,7 @@
 import argparse
 import uvicorn
-import asyncio
 
-from beacon.db import create_db_and_tables
+from beacon.db import create_db_and_tables, get_parish_subscriptions
 
 DATA_DIR = "data/emergencywa"
 
@@ -12,7 +11,9 @@ def process():
     from .api import get_latest_data
 
     state = get_latest_data()
-    determine_events(state)
+    subscriptions = get_parish_subscriptions()
+    messages = determine_events(state)
+    messages.dispatch(subscriptions)
 
 
 def serve():
@@ -24,8 +25,6 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("process", help="Scan for events and notify users")
     subparsers.add_parser("serve", help="Serve HTTP requests")
-
-    asyncio.run(create_db_and_tables())
 
     args = parser.parse_args()
     command_funcs = {"process": process, "serve": serve}

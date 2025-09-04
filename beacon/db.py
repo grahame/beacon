@@ -1,3 +1,4 @@
+from collections import defaultdict
 from collections.abc import AsyncGenerator
 
 from fastapi import Depends
@@ -6,13 +7,15 @@ from fastapi_users.db import (
     SQLAlchemyBaseUserTableUUID,
     SQLAlchemyUserDatabase,
 )
-from sqlalchemy import ForeignKey, Index, String
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
-from sqlalchemy.orm import mapped_column
-from .settings import settings
+from sqlalchemy import ForeignKey, Index, String, create_engine, select
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 
-DATABASE_URL = str(settings.pg_async_dsn)
+from .settings import settings
 
 
 class Base(DeclarativeBase):
@@ -37,12 +40,13 @@ class ParishSubscription(Base):
     parish: Mapped[str] = mapped_column(String(length=4096), nullable=False)
 
 
-engine = create_async_engine(DATABASE_URL)
-async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+engine = settings.create_sync_engine()
+async_engine = settings.create_async_engine()
+async_session_maker = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
 async def create_db_and_tables():
-    async with engine.begin() as conn:
+    async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
@@ -53,3 +57,12 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User, OAuthAccount)
+
+
+def get_parish_subscriptions():
+    session = Session(engine)
+    stmt = select(ParishSubscription.parish, User.email).join(User)
+    subs = defaultdict(list)
+    for parish, email in session.execute(stmt):
+        subs[parish].append(email)
+    return subs
