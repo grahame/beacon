@@ -4,11 +4,11 @@ import datetime
 EMERGENCY_WA_BASE = "https://api.emergency.wa.gov.au/v1/"
 EMERGENCY_WA_ENDPOINTS = [
     "warnings",
-    "incidents",
-    "centres",
-    "closures",
-    "events",
-    "total-fire-bans",
+    # "incidents",
+    # "centres",
+    # "closures",
+    # "events",
+    # "total-fire-bans",
 ]
 
 

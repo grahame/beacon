@@ -1,36 +1,15 @@
 import argparse
-import datetime
-import json
-import os
-from glob import glob
-from itertools import pairwise
-
 import uvicorn
 
 DATA_DIR = "data/emergencywa"
 
 
-def update():
+def process():
+    from .analysis import determine_events
     from .api import get_latest_data
 
-    timestamp = int(1000 * datetime.datetime.now(datetime.timezone.utc).timestamp())
-    pfx = f"{DATA_DIR}/{timestamp}"
-    tmpf = pfx + ".tmp"
-    outf = pfx + ".json"
-    with open(tmpf, "w") as fd:
-        json.dump(get_latest_data(), fd)
-        os.rename(tmpf, outf)
-
-
-def events():
-    from .analysis import determine_events
-
-    for from_file, to_file in pairwise(sorted(glob(f"{DATA_DIR}/*.json"))):
-        with open(from_file, "r") as fd:
-            from_data = json.load(fd)
-        with open(to_file, "r") as fd:
-            to_data = json.load(fd)
-        determine_events(from_data, to_data)
+    state = get_latest_data()
+    determine_events(state)
 
 
 def serve():
@@ -40,10 +19,9 @@ def serve():
 def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("update", help="Get latest data from Emergency WA")
-    subparsers.add_parser("events", help="List all events")
+    subparsers.add_parser("process", help="Scan for events and notify users")
     subparsers.add_parser("serve", help="Serve HTTP requests")
 
     args = parser.parse_args()
-    command_funcs = {"update": update, "events": events, "serve": serve}
+    command_funcs = {"process": process, "serve": serve}
     command_funcs[args.command]()

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 import json
 import sys
@@ -19,28 +20,10 @@ class EndpointHandler:
 
 
 @dataclass
-class EndpointDelta:
-    minus: list[str]
-    changed: list[str]
-    plus: list[str]
-
-
-@dataclass
 class Warning:
     id: str
     title: str
     parishes: list[str]
-
-
-def diff_endpoint(before, after):
-    before_ids = set(before.keys())
-    after_ids = set(after.keys())
-
-    minus = before_ids - after_ids
-    changed = [t for t in before_ids.intersection(after_ids) if before[t] != after[t]]
-    plus = after_ids - before_ids
-
-    return EndpointDelta(minus, changed, plus)
 
 
 def read_parish_boundaries():
@@ -106,17 +89,21 @@ def map_warnings(parish_boundaries, warning):
     return Warning(warning["id"], warning["title"], parishes)
 
 
-def handle_warnings(before, after, delta: EndpointDelta):
-    print(after)
+def handle_warnings(state: dict[str, Warning]):
+    for warning in state.values():
+        if not warning.parishes:
+            continue
 
 
 handlers = {"warnings": EndpointHandler(map_warnings, handle_warnings)}
 
 
-def determine_events(before, after):
+def determine_events(state):
     parish_boundaries = read_parish_boundaries()
 
     endpoint_to_key = {"total-fire-bans": "totalFireBans"}
+
+    messages = defaultdict(list)
 
     for endpoint, handler in handlers.items():
 
@@ -126,10 +113,5 @@ def determine_events(before, after):
             }
 
         key = endpoint_to_key.get(endpoint, endpoint)
-        before_data = dictify(before[endpoint][key])
-        after_data = dictify(after[endpoint][key])
-
-        delta = diff_endpoint(before_data, after_data)
-        if not delta.minus and not delta.changed and not delta.plus:
-            continue
-        handler.handler(before_data, after_data, delta)
+        endpoint_state = dictify(state[endpoint][key])
+        handler.handler(endpoint_state)
