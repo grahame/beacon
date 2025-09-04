@@ -9,7 +9,7 @@ from fastapi_users.db import (
 from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
-from sqlalchemy.orm import Mapped, declared_attr, mapped_column
+from sqlalchemy.orm import mapped_column
 from .settings import settings
 
 DATABASE_URL = str(settings.pg_async_dsn)
