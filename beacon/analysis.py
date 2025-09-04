@@ -10,6 +10,10 @@ from hashlib import sha256
 from .mailgun import send_message
 from .redis import get_redis
 
+from .log import make_logger
+
+logger = make_logger(__name__)
+
 
 @dataclass
 class Features:
@@ -45,7 +49,7 @@ def read_parish_boundaries():
 
 def find_features(geo_source):
     if geo_source["type"] != "FeatureCollection":
-        print("warning: geo_source found without FeatureCollection", file=sys.stderr)
+        logger.warning("geo_source found without FeatureCollection")
         return Features([], [])
 
     points = []
@@ -53,7 +57,7 @@ def find_features(geo_source):
 
     for feature in geo_source["features"]:
         if "geometry" not in feature:
-            print("warning: feature found without geometry", file=sys.stderr)
+            logger.warning("feature found without geometry")
             continue
 
         geometry = feature["geometry"]
@@ -63,9 +67,8 @@ def find_features(geo_source):
         elif typ == "Polygon":
             polygons.append(shape(geometry))
         else:
-            print(
-                "warning: feature found in collection with unknown type {}".format(typ),
-                file=sys.stderr,
+            logger.warning(
+                "feature found in collection with unknown type {}".format(typ)
             )
     return Features(points, polygons)
 
