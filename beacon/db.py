@@ -6,7 +6,7 @@ from fastapi_users.db import (
     SQLAlchemyBaseUserTableUUID,
     SQLAlchemyUserDatabase,
 )
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
@@ -27,6 +27,14 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     oauth_accounts: Mapped[list[OAuthAccount]] = relationship(
         "OAuthAccount", lazy="joined"
     )
+
+
+class ParishSubscription(Base):
+    __tablename__ = "parish_subscription"
+    __table__args__ = Index("ix_unique_mapping", "user_id", "parish", unique=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    parish: Mapped[str] = mapped_column(String(length=4096), nullable=False)
 
 
 engine = create_async_engine(DATABASE_URL)

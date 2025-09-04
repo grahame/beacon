@@ -22,6 +22,7 @@ class EndpointHandler:
 @dataclass
 class Warning:
     id: str
+    name: str
     title: str
     parishes: list[str]
 
@@ -86,13 +87,30 @@ def affected_parishes(parish_boundaries, features: Features):
 def map_warnings(parish_boundaries, warning):
     features = find_features(warning["geo-source"])
     parishes = affected_parishes(parish_boundaries, features)
-    return Warning(warning["id"], warning["title"], parishes)
+    return Warning(warning["id"], warning["name"], warning["title"], parishes)
 
 
-def handle_warnings(state: dict[str, Warning]):
+def handle_warnings(messages, state: dict[str, Warning]):
     for warning in state.values():
-        if not warning.parishes:
-            continue
+        msg = "{} - {}\nhttps://www.emergency.wa.gov.au/warnings/{}".format(
+            warning.name, warning.title, warning.id
+        )
+        for parish in warning.parishes:
+            messages.add_message(parish, msg)
+
+
+class ParishMessages:
+    def __init__(self):
+        self._messages = defaultdict(list)
+
+    def add_message(self, parish, text):
+        self._messages[parish].append(text)
+
+    def dispatch(self):
+        for parish, messages in sorted(self._messages.items()):
+            print("-- {} --".format(parish))
+            for message in messages:
+                print(message)
 
 
 handlers = {"warnings": EndpointHandler(map_warnings, handle_warnings)}
@@ -103,7 +121,7 @@ def determine_events(state):
 
     endpoint_to_key = {"total-fire-bans": "totalFireBans"}
 
-    messages = defaultdict(list)
+    messages = ParishMessages()
 
     for endpoint, handler in handlers.items():
 
@@ -114,4 +132,6 @@ def determine_events(state):
 
         key = endpoint_to_key.get(endpoint, endpoint)
         endpoint_state = dictify(state[endpoint][key])
-        handler.handler(endpoint_state)
+        handler.handler(messages, endpoint_state)
+
+    messages.dispatch()
