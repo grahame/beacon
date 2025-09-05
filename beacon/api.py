@@ -1,27 +1,31 @@
-import requests
-import datetime
+from fastapi import APIRouter, Depends
 
-EMERGENCY_WA_BASE = "https://api.emergency.wa.gov.au/v1/"
-EMERGENCY_WA_ENDPOINTS = [
-    "warnings",
-    # "incidents",
-    # "centres",
-    # "closures",
-    # "events",
-    # "total-fire-bans",
-]
+from .db import User
+from .settings import settings
+from .users import (
+    auth_backend,
+    current_active_user,
+    fastapi_users,
+    theolau_oauth_client,
+)
+
+api = APIRouter(prefix="/api/v1")
+
+api.include_router(
+    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
+)
+api.include_router(
+    fastapi_users.get_oauth_router(
+        theolau_oauth_client,
+        auth_backend,
+        settings.token_secret,
+        redirect_url="https://{}/oauth-callback".format(settings.base_domain),
+    ),
+    prefix="/auth/theolau",
+    tags=["auth"],
+)
 
 
-def get_latest_data():
-    # we join together the data from all endpoints into a single dictionary
-    data = {}
-    for endpoint in EMERGENCY_WA_ENDPOINTS:
-        url = f"{EMERGENCY_WA_BASE}{endpoint}"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:141.0) Gecko/20100101 Firefox/141.0 Beacon/1.0"
-        }
-        response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            raise Exception(f"Failed to fetch data from {url}: {response.status_code}")
-        data[endpoint] = response.json()
-    return data
+@api.get("/whoami")
+async def authenticated_route(user: User = Depends(current_active_user)):
+    return {"message": f"Hello {user.email}!"}

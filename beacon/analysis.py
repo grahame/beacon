@@ -124,6 +124,14 @@ class ParishMessages:
 
         for parish, messages in sorted(self._messages.items()):
             if parish not in subscriptions:
+                debug_key = get_message_key(parish, repr(messages))
+                if debug_key not in redis_client:
+                    logger.debug(
+                        "{} not subscribed – message not routed: {}".format(
+                            parish, messages
+                        )
+                    )
+                redis_client.set(debug_key, 1)
                 continue
             subs = subscriptions[parish]
             for message in messages:
@@ -148,7 +156,9 @@ class ParishMessages:
                     lines += parish_lines
 
             if lines:
-                send_message(user, "\n".join(lines))
+                send_message(
+                    user, "\n".join(lines), "Warnings within parish boundaries"
+                )
 
             for key in keys:
                 redis_client.set(key, 1)

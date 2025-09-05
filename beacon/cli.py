@@ -10,7 +10,7 @@ DATA_DIR = "data/emergencywa"
 def process():
     try:
         from .analysis import determine_events
-        from .api import get_latest_data
+        from .emwa import get_latest_data
 
         state = get_latest_data()
         subscriptions = get_parish_subscriptions()
@@ -23,11 +23,12 @@ def process():
         send_message(
             "frgrahame@bowland.au",
             "Processing failed with exception:\n\n{}".format(traceback_string),
+            "Exception while processing data",
         )
 
 
 def serve():
-    uvicorn.run("beacon.server:app", port=5961, log_level="info")
+    uvicorn.run("beacon.server:app", port=5961, log_level="info", reload=True)
 
 
 def main():

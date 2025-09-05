@@ -1,16 +1,9 @@
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from .db import User, create_db_and_tables
-from .schemas import UserCreate, UserRead, UserUpdate
-from .settings import settings
-from .users import (
-    auth_backend,
-    current_active_user,
-    fastapi_users,
-    theolau_oauth_client,
-)
+from .db import create_db_and_tables
+from .api import api
 
 
 @asynccontextmanager
@@ -22,38 +15,4 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
-app.include_router(
-    fastapi_users.get_oauth_router(
-        theolau_oauth_client, auth_backend, settings.token_secret
-    ),
-    prefix="/auth/theolau",
-    tags=["auth"],
-)
-
-
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
+app.include_router(api)

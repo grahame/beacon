@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     theolau_oauth_client_id: str
     theolau_oauth_client_secret: str
     mailgun_api_key: str
+    base_domain: str
 
     def create_sync_engine(self, **kwargs):
         return sqlalchemy.create_engine(
