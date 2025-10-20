@@ -1,26 +1,17 @@
-[tool.poetry]
+[project]
 name = "beacon"
 version = "0.1.0"
-description = ""
-authors = ["Fr Grahame Bowland <frgrahame@bowland.au>"]
-readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "fastapi-users[oauth,sqlalchemy]>=14.0.1",
+    "mailgun>=1.2.0",
+    "psycopg2>=2.9.11",
+    "pydantic-settings>=2.11.0",
+    "redis>=6.4.0",
+    "shapely>=2.1.2",
+    "uvicorn>=0.38.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-requests = "^2.32.4"
-fastapi = "^0.116.1"
-fastapi-users = {extras = ["oauth", "sqlalchemy"], version = "^14.0.1"}
-uvicorn = {extras = ["standard"], version = "^0.35.0"}
-asyncpg = "^0.30.0"
-pydantic-settings = "^2.10.1"
-shapely = "^2.1.1"
-mailgun = "^1.1.0"
-redis = "^6.4.0"
-psycopg2 = "^2.9.10"
-
-[tool.poetry.scripts]
+[project.scripts]
 beacon = "beacon.cli:main"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
