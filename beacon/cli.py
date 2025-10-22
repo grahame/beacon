@@ -40,3 +40,7 @@ def main():
     args = parser.parse_args()
     command_funcs = {"process": process, "serve": serve}
     command_funcs[args.command]()
+
+
+if __name__ == '__main__':
+    main()
