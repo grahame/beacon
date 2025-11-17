@@ -1,14 +1,18 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { store } from "./app/store";
+import { store } from "./rtk/store";
 import { Provider } from "react-redux";
 import "./index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App.tsx";
+import { AuthProvider } from "./features/auth/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <StrictMode>
-      <App />
-    </StrictMode>
-  </Provider>
+    <Provider store={store}>
+        <StrictMode>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </StrictMode>
+    </Provider>
 );

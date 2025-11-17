@@ -1,8 +1,9 @@
 import "./App.css";
 import "react";
+import { Button } from "reactstrap";
 
 function App() {
-  return <p>Insert the app here.</p>;
+    return <Button>Insert the app here.</Button>;
 }
 
 export default App;
