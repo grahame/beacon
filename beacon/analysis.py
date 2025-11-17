@@ -65,6 +65,8 @@ def find_features(geo_source):
             points.append(shape(geometry))
         elif typ == "Polygon":
             polygons.append(shape(geometry))
+        elif typ == "MultiPolygon":
+            polygons.append(shape(geometry))
         else:
             logger.warning(
                 "feature found in collection with unknown type {}".format(typ)
