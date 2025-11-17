@@ -28,7 +28,7 @@ def process():
 
 
 def serve():
-    uvicorn.run("beacon.server:app", port=5961, log_level="info", reload=True)
+    uvicorn.run("beacon.server:app", port=5961, log_level="info", reload=True, reload_dirs=["./beacon"])
 
 
 def main():
