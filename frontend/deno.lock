@@ -3,8 +3,6 @@
   "specifiers": {
     "npm:@eslint/js@^9.33.0": "9.34.0",
     "npm:@reduxjs/toolkit@^2.9.0": "2.9.0_react@19.1.1_react-redux@9.2.0__@types+react@19.1.12__react@19.1.1_@types+react@19.1.12_redux@5.0.1",
-    "npm:@testing-library/jest-dom@^6.6.3": "6.9.1",
-    "npm:@testing-library/react@^16.3.0": "16.3.1_@testing-library+dom@10.4.1_@types+react@19.1.12_@types+react-dom@19.1.9__@types+react@19.1.12_react@19.1.1_react-dom@19.1.1__react@19.1.1",
     "npm:@types/react-dom@^19.1.7": "19.1.9_@types+react@19.1.12",
     "npm:@types/react-redux@^7.1.34": "7.1.34_@types+react@19.1.12",
     "npm:@types/react@^19.1.10": "19.1.12",
@@ -25,9 +23,7 @@
     "npm:typescript-eslint@^8.39.1": "8.42.0_eslint@9.34.0_typescript@5.8.3_@typescript-eslint+parser@8.42.0__eslint@9.34.0__typescript@5.8.3",
     "npm:typescript@~5.8.3": "5.8.3",
     "npm:vite@*": "7.1.4_picomatch@4.0.3",
-    "npm:vite@^7.1.2": "7.1.4_picomatch@4.0.3",
-    "npm:vitest@*": "3.2.4_happy-dom@20.0.11_jsdom@27.4.0_vite@7.1.4__picomatch@4.0.3",
-    "npm:vitest@^3.2.4": "3.2.4_happy-dom@20.0.11_jsdom@27.4.0_vite@7.1.4__picomatch@4.0.3"
+    "npm:vite@^7.1.2": "7.1.4_picomatch@4.0.3"
   },
   "npm": {
     "@acemir/cssom@0.9.30": {
@@ -2082,11 +2078,6 @@
     }
   },
   "workspace": {
-    "dependencies": [
-      "npm:@testing-library/jest-dom@^6.6.3",
-      "npm:@testing-library/react@^16.3.0",
-      "npm:vitest@^3.2.4"
-    ],
     "packageJson": {
       "dependencies": [
         "npm:@eslint/js@^9.33.0",

@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AxiosRequestConfig } from "axios";
 import { getJwt } from "./jwt";
 import axios from "axios";
+import type { User } from "./User";
 
 export const ApiAxiosRequestConfig = (): AxiosRequestConfig => {
     const headers: AxiosRequestConfig["headers"] = { "Content-Type": "application/json" };
@@ -29,6 +30,7 @@ const getUser = async () => {
     }
 };
 
-export const UserBootstrap = createAsyncThunk("user/boostrap", async (thunkAPI) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const UserBootstrap = createAsyncThunk("user/boostrap", async (_thunkAPI) => {
     return await getUser();
 });

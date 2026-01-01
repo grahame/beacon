@@ -9,6 +9,16 @@ const initialState: CounterState = {
     valid: false,
 };
 
+export interface User {
+    readonly email: string;
+    readonly is_active?: boolean;
+    readonly is_superuser?: boolean;
+    readonly is_verified?: boolean;
+    readonly password?: string;
+    readonly name: string;
+    readonly affiliation?: string;
+}
+
 export const userSlice = createSlice({
     name: "user",
     initialState,
