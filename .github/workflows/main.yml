@@ -44,7 +44,7 @@ jobs:
           deno-version: v2.x
 
       - name: deno build
-        run: cd frontend && deno install && deno run build
+        run: cd frontend && deno install && deno run build && cp -r ./dist/ static/dist/
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -68,8 +68,8 @@ jobs:
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@v5
         with:
-          context: static/
-          file: ./static/Dockerfile
+          context: frontend/static/
+          file: ./frontend/static/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta_static.outputs.tags }}
