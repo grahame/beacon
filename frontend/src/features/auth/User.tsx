@@ -5,18 +5,12 @@ import type { RootState } from "../../rtk/store";
 export interface UserState {
     // have we bootstrapped the user process?
     readonly valid: boolean;
-    // was there an error logging in?
-    readonly login_error: string | undefined;
-    // was there an error registering?
-    readonly registration_error: string | undefined;
     // if the user is undefined, we are not logged in
     readonly user: User | undefined;
 }
 
 const initialState: UserState = {
     valid: false,
-    login_error: undefined,
-    registration_error: undefined,
     user: undefined,
 };
 

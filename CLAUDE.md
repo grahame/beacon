@@ -1,3 +1,5 @@
+# instructions for Claude
+
 ## frontend commands
 
 Within the frontend/ directory:
@@ -10,6 +12,8 @@ Within the frontend/ directory:
 
 We are using deno with vite, configured without a `deno.json` - everything for
 config is in `package.json`
+
+We are using reactstrap for UX.
 
 ## backend commands
 
