@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../rtk/store";
+import { UserBootstrap } from "./Actions";
 
 export interface UserState {
     // have we bootstrapped the user process?
@@ -31,6 +32,15 @@ export const userSlice = createSlice({
         setValid: (state, action: PayloadAction<boolean>) => {
             state.valid = action.payload;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(UserBootstrap.fulfilled, (state, action) => {
+            const user = action.payload;
+            // Note: it doesn't matter if we're logged in or not, what matters
+            // is that we've checked.
+            state.valid = true;
+            state.user = user;
+        });
     },
 });
 

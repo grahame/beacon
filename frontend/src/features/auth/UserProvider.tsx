@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../rtk/hooks";
 import { UserBootstrap } from "./Actions";
@@ -19,10 +20,11 @@ const SignInButton: React.FC = () => {
 
 export const UserProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
     const dispatch = useAppDispatch();
-
-    dispatch(UserBootstrap());
-
     const state = useAppSelector(selectUser);
+
+    useEffect(() => {
+        dispatch(UserBootstrap());
+    }, [dispatch]);
 
     if (UserLoggedIn(state)) {
         return <div>{children}</div>;
