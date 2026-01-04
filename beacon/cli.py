@@ -1,5 +1,6 @@
 import argparse
 import json
+import sys
 import traceback
 import uvicorn
 
@@ -43,7 +44,7 @@ def clear_cache():
 
     redis_client = get_redis()
     redis_client.flushdb()
-    print("Redis cache cleared")
+    print("Redis cache cleared", file=sys.stderr)
 
 
 def sync_boundaries(path: str):
