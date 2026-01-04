@@ -56,7 +56,7 @@ jobs:
         id: docker_meta_static
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/grahame/beacon-static
+          images: ghcr.io/grahame/beacon/static
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -96,7 +96,7 @@ jobs:
         id: docker_meta_backend
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/grahame/beacon-backend
+          images: ghcr.io/grahame/beacon/backend
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
