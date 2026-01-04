@@ -116,7 +116,7 @@ jobs:
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@v5
         with:
-          file: ./backend/Dockerfile
+          file: Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.docker_meta_backend.outputs.tags }}
