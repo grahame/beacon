@@ -35,7 +35,7 @@ class Warning:
 
 
 def read_parish_boundaries():
-    with open("data/pb2024.json") as fd:
+    with open("data/parish_boundaries.json") as fd:
         data = json.load(fd)
 
     parishes = {}
@@ -170,7 +170,16 @@ handlers = {"warnings": EndpointHandler(map_warnings, handle_warnings)}
 
 
 def determine_events(state):
-    parish_boundaries = read_parish_boundaries()
+    from sqlalchemy import select
+    from sqlalchemy.orm import Session
+
+    from .db import Parish, engine
+
+    parish_boundaries = {}
+    with Session(engine) as session:
+        for parish in session.execute(select(Parish)).scalars():
+            feature = {"type": "Feature", "properties": parish.properties, "geometry": parish.geometry}
+            parish_boundaries[parish.name] = shape(feature)
 
     endpoint_to_key = {"total-fire-bans": "totalFireBans"}
 

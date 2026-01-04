@@ -7,7 +7,7 @@ from fastapi_users.db import (
     SQLAlchemyBaseUserTableUUID,
     SQLAlchemyUserDatabase,
 )
-from sqlalchemy import ForeignKey, Index, String, select
+from sqlalchemy import JSON, ForeignKey, Index, String, select
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -32,12 +32,20 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     )
 
 
+class Parish(Base):
+    __tablename__ = "parish"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(length=255), nullable=False, unique=True)
+    properties: Mapped[dict] = mapped_column(JSON, nullable=False)
+    geometry: Mapped[dict] = mapped_column(JSON, nullable=False)
+
+
 class ParishSubscription(Base):
     __tablename__ = "parish_subscription"
-    __table__args__ = Index("ix_unique_mapping", "user_id", "parish", unique=True)
+    __table__args__ = Index("ix_unique_mapping", "user_id", "parish_id", unique=True)
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    parish: Mapped[str] = mapped_column(String(length=4096), nullable=False)
+    parish_id: Mapped[int] = mapped_column(ForeignKey("parish.id", ondelete="CASCADE"), nullable=False)
 
 
 engine = settings.create_sync_engine()
@@ -61,7 +69,7 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 def get_parish_subscriptions():
     session = Session(engine)
-    stmt = select(ParishSubscription.parish, User.email).join(User)
+    stmt = select(Parish.name, User.email).join(ParishSubscription, ParishSubscription.parish_id == Parish.id).join(User, User.id == ParishSubscription.user_id)
     subs = defaultdict(list)
     for parish, email in session.execute(stmt):
         subs[parish].append(email)
