@@ -24,11 +24,9 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Install the project
-        working-directory: backend
         run: uv sync --locked --all-extras --dev
 
       - name: Lint
-        working-directory: backend
         run: |
           uv run ruff check beacon
           uv run black --check beacon
@@ -118,7 +116,6 @@ jobs:
       - name: Push to GitHub Container Registry
         uses: docker/build-push-action@v5
         with:
-          context: backend/
           file: ./backend/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
