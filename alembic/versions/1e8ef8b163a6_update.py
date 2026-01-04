@@ -1,8 +1,8 @@
 """update
 
-Revision ID: f4a5296f1474
+Revision ID: 1e8ef8b163a6
 Revises: 
-Create Date: 2026-01-04 20:57:45.871806
+Create Date: 2026-01-04 21:45:24.369816
 
 """
 from typing import Sequence, Union
@@ -13,7 +13,7 @@ import fastapi_users_db_sqlalchemy
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f4a5296f1474'
+revision: str = '1e8ef8b163a6'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,8 +25,7 @@ def upgrade() -> None:
     op.create_table('parish',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('properties', sa.JSON(), nullable=False),
-    sa.Column('geometry', sa.JSON(), nullable=False),
+    sa.Column('geojson', sa.JSON(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )

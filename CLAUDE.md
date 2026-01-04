@@ -36,6 +36,7 @@ within the root directory:
 ## Python
 
 - this codebase uses `uv` as the package manager
+- after modifying any python code, format it with `black`
 
 ## Workflow
 

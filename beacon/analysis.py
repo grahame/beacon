@@ -65,6 +65,8 @@ def find_features(geo_source):
             points.append(shape(geometry))
         elif typ == "Polygon":
             polygons.append(shape(geometry))
+        elif typ == "LineString":
+            polygons.append(shape(geometry))
         elif typ == "MultiPolygon":
             polygons.append(shape(geometry))
         else:
@@ -178,8 +180,7 @@ def determine_events(state):
     parish_boundaries = {}
     with Session(engine) as session:
         for parish in session.execute(select(Parish)).scalars():
-            feature = {"type": "Feature", "properties": parish.properties, "geometry": parish.geometry}
-            parish_boundaries[parish.name] = shape(feature)
+            parish_boundaries[parish.name] = shape(parish.geojson)
 
     endpoint_to_key = {"total-fire-bans": "totalFireBans"}
 

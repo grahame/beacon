@@ -36,8 +36,7 @@ class Parish(Base):
     __tablename__ = "parish"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(length=255), nullable=False, unique=True)
-    properties: Mapped[dict] = mapped_column(JSON, nullable=False)
-    geometry: Mapped[dict] = mapped_column(JSON, nullable=False)
+    geojson: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 
 class ParishSubscription(Base):
@@ -45,7 +44,9 @@ class ParishSubscription(Base):
     __table__args__ = Index("ix_unique_mapping", "user_id", "parish_id", unique=True)
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    parish_id: Mapped[int] = mapped_column(ForeignKey("parish.id", ondelete="CASCADE"), nullable=False)
+    parish_id: Mapped[int] = mapped_column(
+        ForeignKey("parish.id", ondelete="CASCADE"), nullable=False
+    )
 
 
 engine = settings.create_sync_engine()
@@ -69,7 +70,11 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 def get_parish_subscriptions():
     session = Session(engine)
-    stmt = select(Parish.name, User.email).join(ParishSubscription, ParishSubscription.parish_id == Parish.id).join(User, User.id == ParishSubscription.user_id)
+    stmt = (
+        select(Parish.name, User.email)
+        .join(ParishSubscription, ParishSubscription.parish_id == Parish.id)
+        .join(User, User.id == ParishSubscription.user_id)
+    )
     subs = defaultdict(list)
     for parish, email in session.execute(stmt):
         subs[parish].append(email)
