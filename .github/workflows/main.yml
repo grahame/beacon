@@ -44,7 +44,7 @@ jobs:
           deno-version: v2.x
 
       - name: deno build
-        run: cd frontend && deno run build
+        run: cd frontend && deno install && deno run build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
