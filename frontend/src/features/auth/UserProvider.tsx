@@ -1,10 +1,21 @@
-import { useAppDispatch } from "../../rtk/hooks";
+import { useAppDispatch, useAppSelector } from "../../rtk/hooks";
 import { UserBootstrap } from "./Actions";
+import { selectUser, type UserState } from "./User";
 
-export const AuthProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
+const UserLoggedIn = (state: UserState): boolean => {
+    return state.valid === true && state.user !== undefined;
+};
+
+export const UserProvider: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
     const dispatch = useAppDispatch();
 
     dispatch(UserBootstrap());
 
-    return <div>{children}</div>;
+    const state = useAppSelector(selectUser);
+
+    if (UserLoggedIn(state)) {
+        return <div>{children}</div>;
+    } else {
+        return <div>not logged in...</div>;
+    }
 };

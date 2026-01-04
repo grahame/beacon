@@ -5,14 +5,14 @@ import { Provider } from "react-redux";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./App.tsx";
-import { AuthProvider } from "./features/auth/UserProvider.tsx";
+import { UserProvider } from "./features/auth/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
         <StrictMode>
-            <AuthProvider>
+            <UserProvider>
                 <App />
-            </AuthProvider>
+            </UserProvider>
         </StrictMode>
     </Provider>
 );
