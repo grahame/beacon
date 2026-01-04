@@ -108,7 +108,19 @@ const UserWelcome: React.FC = () => {
         <Card className="mb-4">
             <CardBody>
                 <CardTitle tag="h5">Welcome, {user.name}!</CardTitle>
-                <CardText>Logged in as {user.email}</CardText>
+                <CardText>
+                    <p>Logged in as {user.email}.</p>
+                    <p>
+                        For each parish within the Anglican Diocese of Perth, you can subscribe to receive notifications
+                        (sent via email) for any warning posted to Emergency WA that falls within the boundaries of that
+                        parish.
+                    </p>
+                    <p>
+                        This service is to support of pastoral ministry only, and should not be relied upon for your
+                        safety or the safety of others. This is an unofficial service. Any queries can be sent to{" "}
+                        <a href="mailto:frgrahame@bowland.au">Fr Grahame Bowland</a>.
+                    </p>
+                </CardText>
                 <Button color="danger" onClick={handleLogout}>
                     Log out
                 </Button>
