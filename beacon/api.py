@@ -57,7 +57,11 @@ async def get_subscriptions(
     subscribed_ids = {row[0] for row in subs_result}
 
     return [
-        {"parish": parish.name, "subscribed": parish.id in subscribed_ids}
+        {
+            "parish_id": parish.id,
+            "parish": parish.name,
+            "subscribed": parish.id in subscribed_ids,
+        }
         for parish in parishes
     ]
 
@@ -66,8 +70,8 @@ class SetSubscriptionRequest(BaseModel):
     parish_id: int
 
 
-@api.post("/subscription")
-async def set_subscription(
+@api.post("/subscribe")
+async def subscribe(
     request: SetSubscriptionRequest,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
@@ -78,8 +82,8 @@ async def set_subscription(
     return {"status": "subscribed"}
 
 
-@api.delete("/subscription")
-async def delete_subscription(
+@api.post("/unsubscribe")
+async def unsubscribe(
     request: SetSubscriptionRequest,
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),

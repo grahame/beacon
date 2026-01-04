@@ -146,7 +146,10 @@ class ParishMessages:
         for user, parish_messages in user_parish_messages.items():
             keys = []
             lines = []
+            parishes = set()
+
             for parish, messages in parish_messages.items():
+                parishes.add(parish)
                 parish_lines = []
                 for message in messages:
                     message_key = get_message_key(user, parish, message)
@@ -161,7 +164,9 @@ class ParishMessages:
 
             if lines:
                 send_message(
-                    user, "\n".join(lines), "Warnings within parish boundaries"
+                    user,
+                    "\n".join(lines),
+                    "Emergency warning: {}".format("; ".join(sorted(parishes))),
                 )
 
             for key in keys:
