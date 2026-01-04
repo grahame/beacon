@@ -58,8 +58,11 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         # Always update the user's name from OAuth provider
         info = await theolau_oauth_client.get_profile(access_token)
         print("XXX", info)
-        if info and "name" in info:
-            user.name = info["name"]
+        if info:
+            if "name" in info:
+                user.name = info["name"]
+            if "email_verified" in info:
+                user.is_verified = info["email_verified"]
             await self.user_db.update(user, {"name": user.name})
 
         return user
