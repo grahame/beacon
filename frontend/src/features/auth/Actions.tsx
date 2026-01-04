@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AxiosRequestConfig } from "axios";
-import { getJwt } from "./jwt";
+import { deleteJWT, getJwt } from "./jwt";
 import axios from "axios";
 import type { User } from "./User";
 
@@ -30,7 +30,14 @@ const getUser = async () => {
     }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const UserBootstrap = createAsyncThunk("user/boostrap", async (_thunkAPI) => {
+export const Logout = createAsyncThunk("user/logout", async () => {
+    deleteJWT();
+    return {
+        success: true,
+        user: await getUser(),
+    };
+});
+
+export const UserBootstrap = createAsyncThunk("user/boostrap", async () => {
     return await getUser();
 });

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../rtk/store";
-import { UserBootstrap } from "./Actions";
+import { Logout, UserBootstrap } from "./Actions";
 
 export interface UserState {
     // have we bootstrapped the user process?
@@ -22,7 +22,6 @@ export interface User {
     readonly is_verified?: boolean;
     readonly password?: string;
     readonly name: string;
-    readonly affiliation?: string;
 }
 
 export const userSlice = createSlice({
@@ -40,6 +39,10 @@ export const userSlice = createSlice({
             // is that we've checked.
             state.valid = true;
             state.user = user;
+        });
+        builder.addCase(Logout.fulfilled, (state, action) => {
+            state.user = action.payload.user;
+            state.valid = true; // we concretely know that we have no user
         });
     },
 });

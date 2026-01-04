@@ -19,6 +19,7 @@ theolau_oauth_client = OpenID(
     settings.theolau_oauth_client_secret,
     "https://auth.theol.au/application/o/beacon/.well-known/openid-configuration",
     "theolau",
+    base_scopes=["openid", "email", "profile"],
 )
 
 
@@ -28,6 +29,40 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+
+    async def oauth_callback(
+        self,
+        oauth_name: str,
+        access_token: str,
+        account_id: str,
+        account_email: str,
+        expires_at: Optional[int] = None,
+        refresh_token: Optional[str] = None,
+        request: Optional[Request] = None,
+        *,
+        associate_by_email: bool = False,
+        is_verified_by_default: bool = False,
+    ) -> User:
+        user = await super().oauth_callback(
+            oauth_name,
+            access_token,
+            account_id,
+            account_email,
+            expires_at,
+            refresh_token,
+            request,
+            associate_by_email=associate_by_email,
+            is_verified_by_default=is_verified_by_default,
+        )
+
+        # Always update the user's name from OAuth provider
+        info = await theolau_oauth_client.get_profile(access_token)
+        print("XXX", info)
+        if info and "name" in info:
+            user.name = info["name"]
+            await self.user_db.update(user, {"name": user.name})
+
+        return user
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

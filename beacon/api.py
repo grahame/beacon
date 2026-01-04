@@ -28,4 +28,9 @@ api.include_router(
 
 @api.get("/users/me")
 async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
+    return {
+        "email": user.email,
+        "name": user.name,
+        "is_superuser": user.is_superuser,
+        "is_active": user.is_active,
+    }
