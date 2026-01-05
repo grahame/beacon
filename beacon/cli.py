@@ -2,7 +2,9 @@ import argparse
 import json
 import sys
 import traceback
+
 import uvicorn
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from beacon.db import get_parish_subscriptions
 
@@ -30,13 +32,20 @@ def process():
 
 
 def serve():
-    uvicorn.run(
-        "beacon.server:app",
-        port=5961,
-        log_level="info",
-        reload=True,
-        reload_dirs=["./beacon"],
-    )
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(process, "interval", minutes=1)
+    scheduler.start()
+
+    try:
+        uvicorn.run(
+            "beacon.server:app",
+            port=5961,
+            log_level="info",
+            reload=True,
+            reload_dirs=["./beacon"],
+        )
+    finally:
+        scheduler.shutdown()
 
 
 def clear_cache():
