@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button } from "reactstrap";
+import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle, Container } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../rtk/hooks";
 import { UserBootstrap } from "./Actions";
 import { selectUser, type UserState } from "./User";
@@ -16,24 +16,40 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <>
-            <h2>Beacon: emergency alerts for parishes in the Anglican Diocese of Perth</h2>
+        <Container>
+            <Card className="mb-4">
+                <CardBody>
+                    <CardTitle tag="h1">Beacon</CardTitle>
+                    <CardSubtitle>
+                        <em>Emergency alerts for parishes in the Anglican Diocese of Perth</em>
+                    </CardSubtitle>
+                    <CardText>
+                        <p className="fs-5" style={{ paddingTop: "1em" }}>
+                            This website is provided as an unofficial service in support of pastoral ministry within the
+                            Diocese. Sign in or create an account to subscribe to notifications (sent via email) for
+                            warnings posted to Emergency WA that fall within the boundaries of any given parish in the
+                            Diocese. This is intended to help clergy and lay leaders offer support to the community when
+                            emergencies arise in parishes.
+                        </p>
+                        <p>
+                            <Button color="primary" onClick={handleSignIn}>
+                                Sign in or create an account
+                            </Button>
+                        </p>
+                    </CardText>
+                </CardBody>
+            </Card>
+
+            <p></p>
 
             <p>
-                This website is provided as an unofficial service in support of pastoral ministry within the Diocese.
-                Sign in or create an account to subscribe to notifications (sent via email) for any warning posted to
-                Emergency WA that falls within the boundaries of any parish in the Diocese.
+                <img className="img-fluid" src="beacon-landing.png" alt="Parish boundaries" />
             </p>
-            <p>
-                This is intended to help clergy and lay leaders offer support to the community when emergencies arise in
-                parishes.
-            </p>
+
             <p>
                 Any queries can be sent to <a href="mailto:frgrahame@bowland.au">Fr Grahame Bowland</a>.
             </p>
-
-            <Button onClick={handleSignIn}>Sign in or create an account</Button>
-        </>
+        </Container>
     );
 };
 

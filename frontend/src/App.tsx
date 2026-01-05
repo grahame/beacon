@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Button, Card, CardBody, CardTitle, CardText, Table } from "reactstrap";
+import { Button, Card, CardBody, CardTitle, CardText, Table, Container } from "reactstrap";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./rtk/hooks";
 import { selectUser } from "./features/auth/User";
@@ -131,10 +131,10 @@ const UserWelcome: React.FC = () => {
 
 function App() {
     return (
-        <>
+        <Container>
             <UserWelcome />
             <Subscriptions />
-        </>
+        </Container>
     );
 }
 
