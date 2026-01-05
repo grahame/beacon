@@ -39,6 +39,7 @@ def serve():
     try:
         uvicorn.run(
             "beacon.server:app",
+            host="0.0.0.0",
             port=5961,
             log_level="info",
             reload=True,
