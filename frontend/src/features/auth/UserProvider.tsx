@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle, Container } from "reactstrap";
+import { Button, ButtonToolbar, Card, CardBody, CardSubtitle, CardText, CardTitle, Container } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../rtk/hooks";
 import { UserBootstrap } from "./Actions";
 import { selectUser, type UserState } from "./User";
@@ -24,18 +24,26 @@ const SignIn: React.FC = () => {
                         <em>Emergency alerts for parishes in the Anglican Diocese of Perth</em>
                     </CardSubtitle>
                     <CardText>
-                        <p className="fs-5" style={{ paddingTop: "1em" }}>
+                        <div className="fs-5" style={{ paddingTop: "1em" }}>
                             This website is provided as an unofficial service in support of pastoral ministry within the
                             Diocese. Sign in or create an account to subscribe to notifications (sent via email) for
                             warnings posted to Emergency WA that fall within the boundaries of any given parish in the
                             Diocese. This is intended to help clergy and lay leaders offer support to the community when
                             emergencies arise in parishes.
-                        </p>
-                        <p>
-                            <Button color="primary" onClick={handleSignIn}>
-                                Sign in or create an account
+                        </div>
+                        <div style={{ paddingTop: "1em" }}>
+                            <Button
+                                className="me-2"
+                                size="md"
+                                color="primary"
+                                href="https://auth.theol.au/if/flow/invitation-enrollment/?itoken=3d188767-64f5-4e52-9d1d-5394345eaa12"
+                            >
+                                New user? Create an account
                             </Button>
-                        </p>
+                            <Button size="md" color="secondary" onClick={handleSignIn}>
+                                Existing user? Sign in
+                            </Button>
+                        </div>
                     </CardText>
                 </CardBody>
             </Card>

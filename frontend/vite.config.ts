@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
     plugins: [react()],
     server: {
-        allowedHosts: ["beacon.theol.au"],
+        allowedHosts: ["beacon.theol.au", "beacon-dev.theol.au"],
         port: 9877,
         host: "10.42.42.3",
         proxy: {
