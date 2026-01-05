@@ -64,15 +64,27 @@ const Subscriptions: React.FC = () => {
             <thead>
                 <tr>
                     <th>Parish</th>
-                    <th>Subscribed</th>
-                    <th>Action</th>
+                    <th>Subscribe/Unsubscribe</th>
                 </tr>
             </thead>
             <tbody>
                 {subscriptions.map((sub) => (
                     <tr key={sub.parish_id}>
-                        <td>{sub.parish}</td>
-                        <td>{sub.subscribed ? "Yes" : "No"}</td>
+                        <td>
+                            {sub.parish}
+                            {sub.parish === "Allied Ministries" ? (
+                                <div>
+                                    <em>
+                                        Note, this "parish" encloses particular areas served by allied ministries,
+                                        including Garden Island, the Cocos and Keeling Islands, Christmas Island, and
+                                        Rottnest Island. If you are involved in chaplaincy such as aged care ministry,
+                                        this will likely not be relevant to you.
+                                    </em>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+                        </td>
                         <td>
                             {sub.subscribed ? (
                                 <Button color="danger" size="sm" onClick={() => handleUnsubscribe(sub.parish_id)}>
