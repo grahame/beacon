@@ -17,7 +17,7 @@ def get_latest_data():
     for endpoint in EMERGENCY_WA_ENDPOINTS:
         url = f"{EMERGENCY_WA_BASE}{endpoint}"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:141.0) Gecko/20100101 Firefox/141.0 Beacon/1.0"
+            "User-Agent": "Mozilla/5.0 Beacon/1.0 (github.com/grahame/beacon EMWA alerting on GeoJSON boundaries)"
         }
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
