@@ -47,19 +47,22 @@ def read_parish_boundaries():
 
 
 def find_features(geo_source):
-    if geo_source["type"] != "FeatureCollection":
+    if geo_source.get("type") != "FeatureCollection":
         logger.warning("geo_source found without FeatureCollection")
         return Features([], [])
 
     points = []
     polygons = []
 
-    for feature in geo_source["features"]:
+    for feature in geo_source.get("features", []):
         if "geometry" not in feature:
             logger.warning("feature found without geometry")
             continue
 
         geometry = feature["geometry"]
+        if "type" not in geometry:
+            logger.warning("geometry found without type")
+            continue
         typ = geometry["type"]
         if typ == "Point":
             points.append(shape(geometry))
@@ -95,6 +98,10 @@ def affected_parishes(parish_boundaries, features: Features):
 
 
 def map_warnings(parish_boundaries, warning):
+    missing = [k for k in ("geo-source", "id", "name", "title") if k not in warning]
+    if missing:
+        logger.warning("warning missing required keys: {}".format(missing))
+        return None
     features = find_features(warning["geo-source"])
     parishes = affected_parishes(parish_boundaries, features)
     return Warning(warning["id"], warning["name"], warning["title"], parishes)
@@ -102,6 +109,8 @@ def map_warnings(parish_boundaries, warning):
 
 def handle_warnings(messages, state: dict[str, Warning]):
     for warning in state.values():
+        if warning is None:
+            continue
         msg = "{} - {}\nhttps://www.emergency.wa.gov.au/warnings/{}".format(
             warning.name, warning.title, warning.id
         )
@@ -199,6 +208,12 @@ def determine_events(state):
             }
 
         key = endpoint_to_key.get(endpoint, endpoint)
+        if endpoint not in state:
+            logger.warning("state missing endpoint: {}".format(endpoint))
+            continue
+        if key not in state[endpoint]:
+            logger.warning("state[{}] missing key: {}".format(endpoint, key))
+            continue
         endpoint_state = dictify(state[endpoint][key])
         handler.handler(messages, endpoint_state)
 
